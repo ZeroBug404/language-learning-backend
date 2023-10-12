@@ -23,7 +23,22 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@map("user")
+  @@map("users")
+}
+
+model Student {
+  id           String   @id @default(uuid())
+  firstName    String
+  middleName   String
+  lastName     String
+  profileImage String?
+  email        String
+  contactNo    String
+  gender       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("students")
 }
 
 
@@ -31,5 +46,5 @@ enum UserRole {
   super_admin
   admin
   instructor
-  customer
+  student
 }

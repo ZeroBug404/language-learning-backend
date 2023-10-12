@@ -9,10 +9,10 @@ import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
 
-const insertIntoDB = async (data: User): Promise<Partial<User>> => {
+const insertIntoDB = async (data: User): Promise<Partial<User>> => { 
   const result = await prisma.user.create({
-    data,
-  });
+    data
+  })
 
   const { password, ...userData } = result;
 
