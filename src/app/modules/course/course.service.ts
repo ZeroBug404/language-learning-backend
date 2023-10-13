@@ -12,12 +12,16 @@ import { ICourseFilterRequest } from './course.interface';
 const insertIntoDB = async (data: Course): Promise<any> => {
   // const { preRequisiteCourses, ...courseData } = data;
 
-  console.log('course data', data);
+  // console.log('course data', data);
   // console.log("pre requisite course data: ", preRequisiteCourses)
 
   const newCourse = await prisma.$transaction(async transactionClient => {
     const result = await transactionClient.course.create({
       data,
+      include: {
+        language: true,
+        instructor: true,
+      },
     });
 
     if (!result) {
@@ -75,7 +79,10 @@ const getAllFromDB = async (
     andConditions.length > 0 ? { AND: andConditions } : {};
 
   const result = await prisma.course.findMany({
-    include: {},
+    include: {
+      language: true,
+      instructor: true,
+    },
     where: whereConditions,
     skip,
     take: limit,
@@ -105,7 +112,10 @@ const getByIdFromDB = async (id: string): Promise<Course | null> => {
     where: {
       id,
     },
-    include: {},
+    include: {
+      language: true,
+      instructor: true,
+    },
   });
   return result;
 };

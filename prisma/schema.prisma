@@ -31,7 +31,7 @@ model Language {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Courses    Course[]
+  Courses Course[]
 
   @@map("languages")
 }
@@ -55,7 +55,7 @@ model Course {
   instructor   Instructor @relation(fields: [instructorId], references: [id])
 
   Students Student[]
-  lesson           Lesson[]
+  lesson   Lesson[]
 
   @@map("courses")
 }
