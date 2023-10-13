@@ -31,11 +31,11 @@ router.post(
     StudentController.insertIntoDB
 );
 
-// router.patch(
-//     '/:id',
-//     auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-//     // validateRequest(StudentValidation.update),
-//     StudentController.updateIntoDB)
+router.patch(
+    '/:id',
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    // validateRequest(StudentValidation.update),
+    StudentController.updateIntoDB)
 
 router.delete(
     '/:id',
