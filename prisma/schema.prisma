@@ -31,7 +31,7 @@ model Language {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Courses Course[]
+  Courses    Course[]
 
   @@map("languages")
 }
@@ -45,7 +45,6 @@ model Course {
   quizzes          String
   learningOutcomes String
   certification    String
-  lesson           Lesson[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -56,6 +55,7 @@ model Course {
   instructor   Instructor @relation(fields: [instructorId], references: [id])
 
   Students Student[]
+  lesson           Lesson[]
 
   @@map("courses")
 }
@@ -106,6 +106,8 @@ model Lesson {
 
   courseId String
   Course   Course @relation(fields: [courseId], references: [id])
+
+  @@map("lesson")
 }
 
 enum UserRole {
