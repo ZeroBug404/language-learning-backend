@@ -10,7 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id         String   @id @default(uuid())
   name       String
@@ -26,6 +25,41 @@ model User {
   @@map("users")
 }
 
+model Language {
+  id        String   @id @default(uuid())
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Courses Course[]
+
+  @@map("languages")
+}
+
+model Course {
+  id               String   @id @default(uuid())
+  title            String
+  description      String
+  totalWeek        String
+  level            String
+  quizzes          String
+  learningOutcomes String
+  certification    String
+  lesson           Lesson[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  languageId String
+  language   Language @relation(fields: [languageId], references: [id])
+
+  instructorId String
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+
+  Students Student[]
+
+  @@map("courses")
+}
+
 model Student {
   id           String   @id @default(uuid())
   firstName    String
@@ -38,9 +72,41 @@ model Student {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  courseId String?
+  course   Course? @relation(fields: [courseId], references: [id])
+
   @@map("students")
 }
 
+model Instructor {
+  id           String   @id @default(uuid())
+  firstName    String
+  lastName     String
+  profileImage String?
+  email        String
+  contactNo    String
+  gender       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // studentId String
+  // student   Student @relation(fields: [studentId], references: [id])
+
+  Courses Course[]
+
+  @@map("instructor")
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  courseId String
+  Course   Course @relation(fields: [courseId], references: [id])
+}
 
 enum UserRole {
   super_admin
