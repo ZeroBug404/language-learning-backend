@@ -4,6 +4,7 @@ import { studentRoutes } from '../modules/student/student.routes';
 import { instructorRoutes } from '../modules/instructor/instructor.routes';
 import { courseRoutes } from '../modules/course/course.routes';
 import { categoryRoutes } from '../modules/category/category.routes';
+import { userRoutes } from '../modules/user/user.routes';
 
 const router = express.Router();
 
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: '/categories',
     route: categoryRoutes,
+  },
+  {
+    path: '/users',
+    route: userRoutes,
   },
 ];
 

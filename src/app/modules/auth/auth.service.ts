@@ -20,6 +20,8 @@ const insertIntoDB = async (data: User): Promise<Partial<User>> => {
 };
 
 const loginUser = async (data: User) => {
+  // console.log(data);
+  
   const { email, password } = data;
 
   const isUserExist = await prisma.user.findFirst({
@@ -27,6 +29,8 @@ const loginUser = async (data: User) => {
       email: email,
     },
   });
+
+  // console.log(isUserExist);
 
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');

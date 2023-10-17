@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.insertIntoDB(req.body);
-  console.log(result);
+  // console.log(result);
   
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -17,13 +17,14 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
 });
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
+  
   const result = await AuthService.loginUser(req.body);
 
   res.send({
     statusCode: httpStatus.OK,
     success: true,
     message: 'User signin successfully',
-    token: result.accessToken,
+    accessToken: result.accessToken,
   });
 });
 
