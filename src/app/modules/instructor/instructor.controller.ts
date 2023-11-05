@@ -22,6 +22,8 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     const filters = pick(req.query, instructorFilterableFields);
     const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = await InstructorService.getAllFromDB(filters, options);
+
+    console.log('result', result);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

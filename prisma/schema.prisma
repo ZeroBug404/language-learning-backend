@@ -42,7 +42,7 @@ model Course {
   title            String
   description      String
   totalWeek        String
-  level            String
+  level            CourseLevel
   quizzes          String
   learningOutcomes String
   certification    String
@@ -56,6 +56,7 @@ model Course {
   instructor   Instructor @relation(fields: [instructorId], references: [id])
 
   Students Student[]
+
   lesson   Lesson[]
 
   @@map("courses")
@@ -120,4 +121,10 @@ enum UserRole {
   admin
   instructor
   student
+}
+
+enum CourseLevel {
+  beginner
+  intermidiate
+  advanced
 }

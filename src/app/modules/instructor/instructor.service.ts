@@ -23,14 +23,12 @@ const insertIntoDB = async (instructorData: Instructor): Promise<Instructor> => 
     };
   
     // Create the user
-    const createdUser=await prismaClient.user.create({
+    await prismaClient.user.create({
       data: userData,
       include: {
         instructor: true,
       }
     });
-
-    console.log(createdUser);
 
     // Commit the transaction if both operations are successful
     result = instructorResult;
