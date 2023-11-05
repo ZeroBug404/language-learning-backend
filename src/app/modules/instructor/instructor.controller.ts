@@ -7,7 +7,9 @@ import { instructorFilterableFields } from './instructor.constants';
 import { InstructorService } from './instructor.service';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
-    const result = await InstructorService.insertIntoDB(req.body);
+    const instructorData = req.body
+
+    const result = await InstructorService.insertIntoDB(instructorData);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

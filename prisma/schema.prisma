@@ -11,18 +11,17 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(uuid())
-  name       String
-  email      String
-  password   String
-  role       UserRole
-  contactNo  String
-  address    String
-  profileImg String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id        String   @id @default(uuid())
+  email     String
+  role      UserRole
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  Students    Student[]
+  instructorId String?
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
+
+  studentId String?
+  student   Student? @relation(fields: [studentId], references: [id])
 
   @@map("users")
 }
@@ -77,27 +76,28 @@ model Student {
   courseId String?
   course   Course? @relation(fields: [courseId], references: [id])
 
-  userId String
-  user   User?  @relation(fields: [userId], references: [id])
+  instructorId String
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+
+  User User[]
 
   @@map("students")
 }
 
 model Instructor {
   id           String   @id @default(uuid())
-  firstName    String
-  lastName     String
+  name         String
   profileImage String?
   email        String
   contactNo    String
-  gender       String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  // studentId String
-  // student   Student @relation(fields: [studentId], references: [id])
-
   Courses Course[]
+
+  User User[]
+
+  Student Student[]
 
   @@map("instructor")
 }

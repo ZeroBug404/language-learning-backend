@@ -1,4 +1,4 @@
-import { Instructor, Prisma } from '@prisma/client';
+import { Instructor, Prisma, UserRole } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -6,10 +6,41 @@ import prisma from '../../../shared/prisma';
 import { instructorSearchableFields } from './instructor.constants';
 import { IInstructorFilterRequest } from './instructor.interface';
 
-const insertIntoDB = async (data: Instructor): Promise<Instructor> => {
-  const result = await prisma.instructor.create({
-    data,
+const insertIntoDB = async (instructorData: Instructor): Promise<Instructor> => {
+  let result: Instructor | null = null;
+
+  // Start a Prisma transaction
+  await prisma.$transaction(async (prismaClient) => {
+    // Create the instructor
+    const instructorResult = await prismaClient.instructor.create({
+      data: instructorData,
+    });
+
+    const userData = {
+      email: instructorData.email,
+      role: UserRole.instructor,
+      instructorId: instructorResult?.id,
+    };
+  
+    // Create the user
+    const createdUser=await prismaClient.user.create({
+      data: userData,
+      include: {
+        instructor: true,
+      }
+    });
+
+    console.log(createdUser);
+
+    // Commit the transaction if both operations are successful
+    result = instructorResult;
   });
+
+  if (!result) {
+    // Handle the case where the transaction failed
+    throw new Error("Failed to insert instructor and user.");
+  }
+
   return result;
 };
 
