@@ -10,39 +10,34 @@ import { courseSearchableFields } from './course.constants';
 import { ICourseFilterRequest } from './course.interface';
 
 const insertIntoDB = async (data: Course): Promise<any> => {
-  // const { preRequisiteCourses, ...courseData } = data;
 
-  // console.log('course data', data);
-  // console.log("pre requisite course data: ", preRequisiteCourses)
-
-  const newCourse = await prisma.$transaction(async transactionClient => {
-    const result = await transactionClient.course.create({
-      data,
-      include: {
-        language: true,
-        instructor: true,
-      },
-    });
-
-    if (!result) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Unable to create course');
-    }
-
-    return result;
+  const newCourse = await prisma.course.create({
+    data,
+    include: {
+      language: true,
+      instructor: true,
+    },
   });
+
+  if (!newCourse) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Unable to create course');
+  }
 
   if (newCourse) {
     const responseData = await prisma.course.findUnique({
       where: {
         id: newCourse.id,
       },
-      include: {},
+      include: {
+        language: true,
+        instructor: true,
+      },
     });
 
     return responseData;
   }
 
-  throw new ApiError(httpStatus.BAD_REQUEST, 'Unable to create course');
+  return newCourse;
 };
 
 const getAllFromDB = async (

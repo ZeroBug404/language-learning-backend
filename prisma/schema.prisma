@@ -38,7 +38,7 @@ model Language {
 }
 
 model Course {
-  id               String   @id @default(uuid())
+  id               String      @id @default(uuid())
   title            String
   description      String
   totalWeek        String
@@ -46,8 +46,9 @@ model Course {
   quizzes          String
   learningOutcomes String
   certification    String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  price            String
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   languageId String
   language   Language @relation(fields: [languageId], references: [id])
@@ -57,7 +58,7 @@ model Course {
 
   Students Student[]
 
-  lesson   Lesson[]
+  lesson Lesson[]
 
   @@map("courses")
 }
