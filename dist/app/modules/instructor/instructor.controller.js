@@ -20,7 +20,8 @@ const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const instructor_constants_1 = require("./instructor.constants");
 const instructor_service_1 = require("./instructor.service");
 const insertIntoDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield instructor_service_1.InstructorService.insertIntoDB(req.body);
+    const instructorData = req.body;
+    const result = yield instructor_service_1.InstructorService.insertIntoDB(instructorData);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -32,6 +33,7 @@ const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     const filters = (0, pick_1.default)(req.query, instructor_constants_1.instructorFilterableFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
     const result = yield instructor_service_1.InstructorService.getAllFromDB(filters, options);
+    console.log('result', result);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

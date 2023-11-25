@@ -5,8 +5,8 @@ import sendResponse from '../../../shared/sendResponse';
 import { AuthService } from './auth.service';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
+
   const result = await AuthService.insertIntoDB(req.body);
-  // console.log(result);
   
   sendResponse(res, {
     statusCode: httpStatus.OK,

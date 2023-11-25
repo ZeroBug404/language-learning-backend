@@ -9,19 +9,62 @@ import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
 
-const insertIntoDB = async (data: User): Promise<Partial<User>> => { 
-  const result = await prisma.user.create({
-    data
-  })
+const insertIntoDB = async (data: any) => {
 
-  const { password, ...userData } = result;
+  const userData = {
+    email: data.email,
+    password: data.password,
+    role: data.role,
+  };
 
-  return userData;
+  const roleData = {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    profileImage: data.profileImage,
+    email: data.email,
+    contactNo: data.contactNo,
+  };
+
+  const createdUser = await prisma.user.create({
+    data: userData,
+  });
+
+  // Step 3: Determine Role
+  if (userData.role === 'instructor') {
+    // Step 4: Create Instructor
+    const createdInstructor = await prisma.instructor.create({
+      data: {
+        ...roleData,
+        name: `${roleData.firstName} ${roleData.lastName}`,
+      },
+    });
+
+    // Step 5: Associate User with Instructor
+    await prisma.user.update({
+      where: { id: createdUser.id },
+      data: { instructorId: createdInstructor.id },
+    });
+  } else if (userData.role === 'student') {
+    // Step 4: Create Student
+    const createdStudent = await prisma.student.create({
+      data: roleData,
+    });
+
+    // Step 5: Associate User with Student
+    await prisma.user.update({
+      where: { id: createdUser.id },
+      data: { studentId: createdStudent.id },
+    });
+  }
+
+  // const { password, ...userData } = result;
+
+  // return userData;
 };
 
 const loginUser = async (data: User) => {
   // console.log(data);
-  
+
   const { email, password } = data;
 
   const isUserExist = await prisma.user.findFirst({

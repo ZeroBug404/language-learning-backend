@@ -24,13 +24,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InstructorService = void 0;
+const client_1 = require("@prisma/client");
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const instructor_constants_1 = require("./instructor.constants");
-const insertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.instructor.create({
-        data,
-    });
+const insertIntoDB = (instructorData) => __awaiter(void 0, void 0, void 0, function* () {
+    let result = null;
+    // Start a Prisma transaction
+    yield prisma_1.default.$transaction((prismaClient) => __awaiter(void 0, void 0, void 0, function* () {
+        // Create the instructor
+        const instructorResult = yield prismaClient.instructor.create({
+            data: instructorData,
+        });
+        const userData = {
+            email: instructorData.email,
+            role: client_1.UserRole.instructor,
+            instructorId: instructorResult === null || instructorResult === void 0 ? void 0 : instructorResult.id,
+        };
+        // Create the user
+        yield prismaClient.user.create({
+            data: userData,
+            include: {
+                instructor: true,
+            }
+        });
+        // Commit the transaction if both operations are successful
+        result = instructorResult;
+    }));
+    if (!result) {
+        // Handle the case where the transaction failed
+        throw new Error("Failed to insert instructor and user.");
+    }
     return result;
 });
 const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, function* () {

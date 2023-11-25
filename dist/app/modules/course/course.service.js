@@ -30,32 +30,29 @@ const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const course_constants_1 = require("./course.constants");
 const insertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    // const { preRequisiteCourses, ...courseData } = data;
-    // console.log('course data', data);
-    // console.log("pre requisite course data: ", preRequisiteCourses)
-    const newCourse = yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield transactionClient.course.create({
-            data,
-            include: {
-                language: true,
-                instructor: true,
-            },
-        });
-        if (!result) {
-            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'Unable to create course');
-        }
-        return result;
-    }));
+    const newCourse = yield prisma_1.default.course.create({
+        data,
+        include: {
+            language: true,
+            instructor: true,
+        },
+    });
+    if (!newCourse) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'Unable to create course');
+    }
     if (newCourse) {
         const responseData = yield prisma_1.default.course.findUnique({
             where: {
                 id: newCourse.id,
             },
-            include: {},
+            include: {
+                language: true,
+                instructor: true,
+            },
         });
         return responseData;
     }
-    throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'Unable to create course');
+    return newCourse;
 });
 const getAllFromDB = (filters, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, page, skip } = paginationHelper_1.paginationHelpers.calculatePagination(options);

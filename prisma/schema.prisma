@@ -14,14 +14,15 @@ model User {
   id        String   @id @default(uuid())
   email     String
   role      UserRole
+  password  String?  @default("123456")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  instructorId String?
-  instructor   Instructor? @relation(fields: [instructorId], references: [id])
-
   studentId String?
   student   Student? @relation(fields: [studentId], references: [id])
+
+  instructorId String?
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
 
   @@map("users")
 }
@@ -66,22 +67,20 @@ model Course {
 model Student {
   id           String   @id @default(uuid())
   firstName    String
-  middleName   String
   lastName     String
   profileImage String?
   email        String
   contactNo    String
-  gender       String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   courseId String?
   course   Course? @relation(fields: [courseId], references: [id])
 
-  instructorId String
-  instructor   Instructor @relation(fields: [instructorId], references: [id])
+  instructorId String?
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
 
-  User User[]
+  User         User[]
 
   @@map("students")
 }
@@ -97,9 +96,9 @@ model Instructor {
 
   Courses Course[]
 
-  User User[]
-
   Student Student[]
+
+  User    User[]
 
   @@map("instructor")
 }

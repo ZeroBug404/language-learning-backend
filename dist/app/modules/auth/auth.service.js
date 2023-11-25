@@ -31,7 +31,7 @@ const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const insertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.user.create({
-        data
+        data,
     });
     const { password } = result, userData = __rest(result, ["password"]);
     return userData;
