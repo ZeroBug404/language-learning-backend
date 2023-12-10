@@ -8,17 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -30,11 +19,46 @@ const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const insertIntoDB = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.user.create({
-        data,
+    const userData = {
+        email: data.email,
+        password: data.password,
+        role: data.role,
+    };
+    const roleData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profileImage: data.profileImage,
+        email: data.email,
+        contactNo: data.contactNo,
+    };
+    const createdUser = yield prisma_1.default.user.create({
+        data: userData,
     });
-    const { password } = result, userData = __rest(result, ["password"]);
-    return userData;
+    // Step 3: Determine Role
+    if (userData.role === 'instructor') {
+        // Step 4: Create Instructor
+        const createdInstructor = yield prisma_1.default.instructor.create({
+            data: Object.assign(Object.assign({}, roleData), { name: `${roleData.firstName} ${roleData.lastName}` }),
+        });
+        // Step 5: Associate User with Instructor
+        yield prisma_1.default.user.update({
+            where: { id: createdUser.id },
+            data: { instructorId: createdInstructor.id },
+        });
+    }
+    else if (userData.role === 'student') {
+        // Step 4: Create Student
+        const createdStudent = yield prisma_1.default.student.create({
+            data: roleData,
+        });
+        // Step 5: Associate User with Student
+        yield prisma_1.default.user.update({
+            where: { id: createdUser.id },
+            data: { studentId: createdStudent.id },
+        });
+    }
+    // const { password, ...userData } = result;
+    // return userData;
 });
 const loginUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(data);

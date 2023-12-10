@@ -59,7 +59,9 @@ model Course {
 
   Students Student[]
 
-  lesson Lesson[]
+  lessons Lesson[]
+
+  Appointments Appointment[]
 
   @@map("courses")
 }
@@ -80,7 +82,9 @@ model Student {
   instructorId String?
   instructor   Instructor? @relation(fields: [instructorId], references: [id])
 
-  User         User[]
+  Users User[]
+
+  Appointments Appointment[]
 
   @@map("students")
 }
@@ -96,9 +100,9 @@ model Instructor {
 
   Courses Course[]
 
-  Student Student[]
+  Students Student[]
 
-  User    User[]
+  Users User[]
 
   @@map("instructor")
 }
@@ -114,6 +118,23 @@ model Lesson {
   Course   Course @relation(fields: [courseId], references: [id])
 
   @@map("lesson")
+}
+
+model Appointment {
+  id        String   @id @default(uuid())
+  title     String
+  date      String
+  slot      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+
+  courseId String
+  Course   Course @relation(fields: [courseId], references: [id])
+
+  @@map("appointment")
 }
 
 enum UserRole {
