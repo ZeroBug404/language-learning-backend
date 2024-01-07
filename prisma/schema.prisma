@@ -48,6 +48,7 @@ model Course {
   learningOutcomes String
   certification    String
   price            String
+  image            String
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
@@ -104,7 +105,7 @@ model Instructor {
 
   Users User[]
 
-  @@map("instructor")
+  @@map("instructors")
 }
 
 model Lesson {
@@ -117,7 +118,7 @@ model Lesson {
   courseId String
   Course   Course @relation(fields: [courseId], references: [id])
 
-  @@map("lesson")
+  @@map("lessons")
 }
 
 model Appointment {
@@ -134,7 +135,7 @@ model Appointment {
   courseId String
   Course   Course @relation(fields: [courseId], references: [id])
 
-  @@map("appointment")
+  @@map("appointments")
 }
 
 enum UserRole {
